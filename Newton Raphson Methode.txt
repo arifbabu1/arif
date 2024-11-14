@@ -1,0 +1,31 @@
+Newton Raphson Methode
+
+#include <stdio.h>
+#include <math.h>
+
+#define E 0.001
+#define F(x) x*x*x - 3*x + 2
+#define F1(x) 2*x - 3
+
+int main() {
+    float x0, x1, f0, f1, f2;
+
+    printf("Enter the value of x0: ");
+    scanf("%f", &x0);
+
+    while(1) {
+        f0 = F(x0);
+        f1 = F1(x0);
+        x1 = x0 - (f0 / f1);
+        f2 = F(x1);
+
+        if (fabs(f2) < E) {
+            printf("Root is: %f\n", x1);
+            break;
+        } else {
+            x0 = x1;
+        }
+    }
+
+    return 0;
+}
