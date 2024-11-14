@@ -1,4 +1,4 @@
-Bisection
+Second Methode
 
 
 #include <stdio.h>
