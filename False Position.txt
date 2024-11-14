@@ -1,0 +1,44 @@
+False Positon
+
+#include <stdio.h>
+#include <math.h>
+#define E 0.001
+#define F(x) (x * x * x * x - x - 1)
+
+int main() {
+    float x1, x2, x0, f1, f2, f0;
+
+    printf("Enter the value of x1: ");
+    scanf("%f", &x1);
+    printf("Enter the value of x2: ");
+    scanf("%f", &x2);
+
+    while (1) {
+        f1 = F(x1);
+        f2 = F(x2);
+
+        if ((f1 * f2) > 0) {
+            printf("NOT CORRECT!!!\n");
+            break;
+        } else {
+            x0 = x1 - (f1 * (x2 - x1)) / (f2 - f1);
+            f0 = F(x0);
+
+            if (fabs(f0) < E) {
+                printf("Root is %f\n", x0);
+                break;
+            }
+
+            if ((f1 * f0) < 0) {
+                x2 = x0;
+            } else {
+                x1 = x0;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+False Position
