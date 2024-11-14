@@ -1,0 +1,43 @@
+scand Methode
+
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    
+    float x0, x1, x2, f0, f1, f2, tolerance = 0.0001;
+    printf("Enter first initial guess (x0): ");
+    scanf("%f", &x0); 
+    printf("Enter second initial guess (x1): ");
+    scanf("%f", &x1); 
+
+    printf("\n x0\t\t x1\t\t x2\t\t f(x2)\n");
+
+    f0 = x0 * x0 * x0 - 2 * x0 - 5;  
+    f1 = x1 * x1 * x1 - 2 * x1 - 5;  
+
+    if (f0 * f1 > 0) {
+        printf("The initial guesses do not bracket the root. Please try again with different guesses.\n");
+        return 1; 
+    }
+
+    while (1) {
+  
+        x2 = x1 - (x1 - x0) * f1 / (f1 - f0);
+        f2 = x2 * x2 * x2 - 2 * x2 - 5;  /
+
+        printf("%.6f\t %.6f\t %.6f\t %.6f\n", x0, x1, x2, f2);
+
+        if (fabs(f2) < tolerance) {
+
+            break;  
+        }
+
+        x0 = x1;
+        x1 = x2;
+    }
+
+    printf("\nThe root is  =: %f\n", x2);
+    return 0;
+}
+
