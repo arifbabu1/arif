@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <math.h>
+
+#define X(y, z) ((12 - 2 * (y) - (z)) / 5)
+#define Y(x, z) ((15 - (x) - 2 * (z)) / 4)
+#define Z(x, y) ((20 - (x) - 2 * (y)) / 5)
+#define E 0.001 // Convergence tolerance
+
+int main() {
+    float x1 = 0, x2, y1 = 0, y2, z1 = 0, z2;
+    int choice, iteration = 1; 
+
+    printf("Enter 1 for Jacobi or 2 for Gauss-Seidel: ");
+    scanf("%d", &choice); 
+
+    if (choice == 1) {
+        // Jacobi Method
+        printf("Jacobi Method\n");
+        printf("Iteration\tX\t\tY\t\tZ\n");
+
+        while (1) {
+            x2 = X(y1, z1);
+            y2 = Y(x1, z1);
+            z2 = Z(x1, y1);
+            
+            printf("%d\t\t%.6f\t%.6f\t%.6f\n", iteration, x2, y2, z2);
+
+            if (fabs(x2 - x1) < E && fabs(y2 - y1) < E && fabs(z2 - z1) < E) {
+                printf("\nSolution found:\n");
+                printf("X = %.6f\n", x2);
+                printf("Y = %.6f\n", y2);
+                printf("Z = %.6f\n", z2);
+                break;
+            }
+
+            x1 = x2;
+            y1 = y2;
+            z1 = z2;
+            iteration++;
+        }
+    } 
+    else if (choice == 2) {
+        // Gauss-Seidel Method
+        printf("Gauss-Seidel Method\n");
+        printf("Iteration\tX\t\tY\t\tZ\n");
+
+        while (1) {
+            x2 = X(y1, z1);
+            y2 = Y(x2, z1);
+            z2 = Z(x2, y2);
+            
+            printf("%d\t\t%.6f\t%.6f\t%.6f\n", iteration, x2, y2, z2);
+
+            if (fabs(x2 - x1) < E && fabs(y2 - y1) < E && fabs(z2 - z1) < E) {
+                printf("\nSolution found:\n");
+                printf("X = %.6f\n", x2);
+                printf("Y = %.6f\n", y2);
+                printf("Z = %.6f\n", z2);
+                break;
+            }
+
+            x1 = x2;
+            y1 = y2;
+            z1 = z2;
+            iteration++;
+        }
+    } 
+    else {
+        printf("Invalid option! Please enter 1 for Jacobi or 2 for Gauss-Seidel.\n");
+    }
+
+    return 0;
+}
