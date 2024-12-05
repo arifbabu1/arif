@@ -1,0 +1,55 @@
+
+#include <stdio.h>
+
+int main() {
+    int a[2][2], b[2][2], c[2][2], i, j, choice;
+
+
+    printf("Enter elements of Matrix A:\n");
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 2; j++) {
+            printf("A[%d][%d]: ", i, j);
+            scanf("%d", &a[i][j]);
+        }
+    }
+
+
+    printf("Enter elements of Matrix B:\n");
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 2; j++) {
+            printf("B[%d][%d]: ", i, j);
+            scanf("%d", &b[i][j]);
+        }
+    }
+
+
+    printf("Enter 1 for Addition or 2 for Subtraction: ");
+    scanf("%d", &choice);
+
+    if (choice == 1) {
+
+        printf("Sum of Matrix A and B:\n");
+        for (i = 0; i < 2; i++) {
+            for (j = 0; j < 2; j++) {
+                c[i][j] = a[i][j] + b[i][j];
+                printf("%d\t", c[i][j]);
+            }
+            printf("\n");
+        }
+    } else if (choice == 2) {
+
+        printf("Difference of Matrix A and B:\n");
+        for (i = 0; i < 2; i++) {
+            for (j = 0; j < 2; j++) {
+                c[i][j] = a[i][j] - b[i][j];
+                printf("%d\t", c[i][j]);
+            }
+            printf("\n");
+        }
+    } else {
+
+        printf("Invalid choice! Please try again.\n");
+    }
+
+    return 0;
+}
