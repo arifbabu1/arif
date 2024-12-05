@@ -5,7 +5,7 @@ Newton Raphson Methode
 
 #define E 0.001
 #define F(x) x*x*x - 3*x + 2
-#define F1(x) 2*x - 3
+#define F1(x) 3*x*x - 3
 
 int main() {
     float x0, x1, f0, f1, f2;
