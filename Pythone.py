@@ -1,6 +1,9 @@
 #  pip install pygame
-
 # pip install numpy
+
+
+#pip install pygame
+#pip install numpy
 
 
 
@@ -208,3 +211,4 @@ while running:
         frame_count = 0
 
 pygame.quit()
+
