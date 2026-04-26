@@ -1,1 +1,1051 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Md. Arif Babu — Vibe Coder</title>
+  <style>
+    :root{
+      --bg:#070a12;
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.10);
+      --stroke:rgba(255,255,255,.12);
+
+      --accent:#f5c542;     /* gold */
+      --accent2:#4cc9f0;    /* cyan */
+      --radius:18px;
+
+      --headerH:74px;
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(245,197,66,.18), transparent 55%),
+        radial-gradient(700px 420px at 85% 10%, rgba(76,201,240,.15), transparent 50%),
+        linear-gradient(180deg, #070a12 0%, #060812 100%);
+      overflow-x:hidden;
+    }
+
+    /* subtle film grain */
+    body:before{
+      content:"";
+      position:fixed;
+      inset:-40%;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      opacity:.12;
+      mix-blend-mode:overlay;
+      pointer-events:none;
+      transform:translateZ(0);
+      z-index:0;
+    }
+
+    header{
+      position:fixed;
+      top:14px; left:50%;
+      transform:translateX(-50%);
+      width:min(1040px, calc(100% - 26px));
+      height:var(--headerH);
+      z-index:50;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      border-radius: 999px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      padding:0 10px;
+      white-space:nowrap;
+    }
+    .logo{
+      width:12px; height:12px; border-radius:50%;
+      background:linear-gradient(180deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(245,197,66,.55);
+    }
+    .brand .name{
+      font-weight:800;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand .role{
+      font-size:12.5px;
+      color:var(--muted);
+      font-weight:650;
+      margin-top:2px;
+    }
+
+    nav{
+      display:flex; gap:8px; align-items:center;
+      padding:2px;
+      overflow:auto;
+      scrollbar-width:none;
+    }
+    nav::-webkit-scrollbar{ display:none; }
+
+    .nav-btn{
+      border:1px solid rgba(255,255,255,.10);
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight:700;
+      transition: transform .18s var(--ease), background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease);
+      white-space:nowrap;
+      user-select:none;
+    }
+    .nav-btn:hover{
+      transform: translateY(-1px);
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.18);
+    }
+    .nav-btn.active{
+      background: linear-gradient(180deg, rgba(245,197,66,.98), rgba(76,201,240,.35));
+      color:#071016;
+      border-color: rgba(245,197,66,.70);
+      box-shadow: 0 14px 34px rgba(245,197,66,.18);
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding-right:6px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      padding:10px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight:750;
+      transition: .2s var(--ease);
+      user-select:none;
+      white-space:nowrap;
+    }
+    .pill:hover{ transform: translateY(-1px); color:var(--text); background: rgba(255,255,255,.06); }
+    .pill.primary{
+      background: rgba(245,197,66,.12);
+      color: rgba(255,255,255,.9);
+      border-color: rgba(245,197,66,.22);
+    }
+
+    main{
+      position:relative;
+      z-index:1;
+      width:min(1040px, calc(100% - 26px));
+      margin: calc(var(--headerH) + 34px) auto 40px;
+      min-height: calc(100vh - var(--headerH) - 70px);
+    }
+
+    /* We will show only ONE section at a time (per your choice). */
+    .section-wrap{
+      position:relative;
+      height: auto;
+    }
+
+    .section{
+      display:none;
+      transform-origin: 50% 10%;
+      opacity:0;
+      transform: translateY(14px) scale(.985) rotateX(2deg);
+      transition:
+        opacity .45s var(--ease),
+        transform .55s var(--ease),
+        filter .45s var(--ease);
+      filter: blur(6px);
+    }
+
+    .section.active{
+      display:block;
+      opacity:1;
+      transform: translateY(0) scale(1) rotateX(0deg);
+      filter: blur(0px);
+    }
+
+    .panel{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 22px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .panel:after{
+      content:"";
+      position:absolute;
+      inset:-2px -2px auto -2px;
+      height:120px;
+      background: radial-gradient(400px 120px at 20% 0%, rgba(245,197,66,.25), transparent 60%),
+                  radial-gradient(320px 110px at 85% 10%, rgba(76,201,240,.18), transparent 60%);
+      pointer-events:none;
+    }
+
+    /* Hero layout */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .h-eyebrow{
+      color:var(--muted);
+      font-weight:750;
+      letter-spacing:.4px;
+      font-size:13px;
+      text-transform: uppercase;
+      margin: 0 0 10px 0;
+    }
+
+    h1{
+      margin: 0;
+      font-size: clamp(28px, 4.2vw, 44px);
+      line-height:1.05;
+      letter-spacing: .2px;
+    }
+    .sub{
+      margin-top:12px;
+      margin-bottom:18px;
+      color:var(--muted);
+      line-height:1.65;
+      max-width: 68ch;
+      font-size: 15.5px;
+    }
+
+    .cta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin-top: 8px;
+    }
+    .btn{
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 12px 16px;
+      cursor:pointer;
+      font-weight:800;
+      transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); }
+    .btn.accent{
+      background: linear-gradient(180deg, rgba(245,197,66,.98), rgba(76,201,240,.28));
+      border-color: rgba(245,197,66,.65);
+      color:#071016;
+      box-shadow: 0 16px 38px rgba(245,197,66,.16);
+    }
+
+    /* 3D tilt cards */
+    .tilt-grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .tilt{
+      grid-column: span 6;
+      border-radius: 16px;
+      padding: 16px 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      transform-style: preserve-3d;
+      will-change: transform;
+      position:relative;
+      overflow:hidden;
+      min-height: 128px;
+
+      transition: background .2s var(--ease), border-color .2s var(--ease);
+    }
+    .tilt:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(500px 220px at var(--mx, 50%) var(--my, 50%), rgba(245,197,66,.20), transparent 55%),
+        radial-gradient(400px 200px at calc(var(--mx, 50%) + 10%) calc(var(--my, 50%) + 10%), rgba(76,201,240,.16), transparent 60%);
+      opacity:.0;
+      transition: opacity .25s var(--ease);
+      pointer-events:none;
+    }
+    .tilt:hover{ border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.07); }
+    .tilt:hover:before{ opacity:1; }
+
+    .tilt .t-title{
+      font-weight:900;
+      letter-spacing:.2px;
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
+    .tilt .t-sub{
+      margin:0;
+      color: var(--muted);
+      line-height:1.5;
+      font-size: 14px;
+      max-width: 42ch;
+    }
+
+    /* sections other than hero */
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .block{
+      border-radius: 16px;
+      padding: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .block h3{
+      margin:0 0 8px 0;
+      font-size: 16px;
+      letter-spacing:.2px;
+    }
+    .block p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size: 14.5px;
+    }
+
+    /* Projects */
+    .project-list{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .project-card{
+      grid-column: span 6;
+      padding: 16px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+      position:relative;
+      overflow:hidden;
+    }
+    .project-card:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.16);
+    }
+    .project-card .title{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom: 8px;
+    }
+    .badge{
+      font-size:12px;
+      font-weight:900;
+      color:#071016;
+      background: rgba(245,197,66,.95);
+      padding: 6px 10px;
+      border-radius: 999px;
+      box-shadow: 0 14px 30px rgba(245,197,66,.16);
+      white-space:nowrap;
+    }
+    .project-card .desc{
+      color:var(--muted);
+      line-height:1.6;
+      font-size: 14.5px;
+      margin:0;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+      padding: 18px;
+    }
+    .modal.open{ display:flex; }
+    .modal-dialog{
+      width:min(820px, 100%);
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow:hidden;
+      transform: translateY(10px) scale(.99);
+      opacity:0;
+      transition: transform .35s var(--ease), opacity .35s var(--ease);
+    }
+    .modal.open .modal-dialog{
+      transform: translateY(0) scale(1);
+      opacity:1;
+    }
+
+    .modal-head{
+      padding: 16px 16px 12px 16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .modal-head h2{
+      margin:0;
+      font-size: 18px;
+    }
+    .close{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .modal-body{
+      padding: 16px;
+      color: var(--muted);
+      line-height:1.7;
+      font-size: 14.5px;
+    }
+
+    /* Skills */
+    .skills-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .chip{
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.85);
+      font-weight:800;
+      letter-spacing:.15px;
+      transform: translateY(6px);
+      opacity:0;
+      transition: opacity .35s var(--ease), transform .45s var(--ease), background .2s var(--ease);
+    }
+    .section.active .chip{
+      opacity:1;
+      transform: translateY(0);
+    }
+    .chip:nth-child(1){ transition-delay: 30ms; }
+    .chip:nth-child(2){ transition-delay: 80ms; }
+    .chip:nth-child(3){ transition-delay: 130ms; }
+    .chip:nth-child(4){ transition-delay: 180ms; }
+    .chip:nth-child(5){ transition-delay: 230ms; }
+    .chip:nth-child(6){ transition-delay: 280ms; }
+    .chip:nth-child(7){ transition-delay: 330ms; }
+    .chip:nth-child(8){ transition-delay: 380ms; }
+
+    /* Contact */
+    form{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    label{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      grid-column: span 1;
+      color: rgba(255,255,255,.86);
+      font-weight:800;
+      font-size: 13px;
+      letter-spacing:.2px;
+    }
+    input, textarea{
+      width:100%;
+      border-radius: 14px;
+      padding: 12px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{ min-height: 120px; resize: vertical; }
+    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.45); }
+    .full{ grid-column: 1 / -1; }
+    .form-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-start;
+      grid-column: 1 / -1;
+      margin-top: 4px;
+    }
+    .hint{
+      color: var(--muted);
+      font-weight:700;
+      font-size: 13px;
+      margin:0;
+    }
+
+    /* language toggling */
+    [data-lang="bn"]{ display:none; }
+    html.bn [data-lang="en"]{ display:none; }
+    html.bn [data-lang="bn"]{ display:inline; }
+
+    footer{
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight:700;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding: 0 6px;
+    }
+
+    @media (max-width: 860px){
+      .hero{ grid-template-columns: 1fr; }
+      .tilt{ grid-column: span 12; }
+      .project-card{ grid-column: span 12; }
+      .grid-2{ grid-template-columns: 1fr; }
+      form{ grid-template-columns: 1fr; }
+      label, .full{ grid-column: 1 / -1; }
+      header{ height:auto; border-radius: 22px; padding:12px; flex-direction:column; gap:10px; }
+      main{ margin-top: 220px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo"></span>
+      <div>
+        <div class="name">Md. Arif Babu</div>
+        <div class="role">Vibe Coder</div>
+      </div>
+    </div>
+
+    <nav aria-label="Primary">
+      <button class="nav-btn active" data-target="home" type="button">Home</button>
+      <button class="nav-btn" data-target="projects" type="button">Projects</button>
+      <button class="nav-btn" data-target="about" type="button">About</button>
+      <button class="nav-btn" data-target="skills" type="button">Skills</button>
+      <button class="nav-btn" data-target="contact" type="button">Contact</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="pill" id="langToggle" type="button">বাংলা</button>
+      <a class="pill primary" id="cvBtn" href="#" download type="button">Download CV</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="section-wrap">
+
+      <!-- HOME -->
+      <section id="home" class="section active">
+        <div class="panel">
+          <div class="hero">
+            <div>
+              <div class="h-eyebrow" data-lang="en">MENTAL WELLNESS • ONLINE CONSULTATION</div>
+              <div class="h-eyebrow" data-lang="bn">মানসিক স্বাস্থ্য • অনলাইন পরামর্শ</div>
+
+              <h1>
+                <span data-lang="en">I Build Mental Wellness Online Consultation system</span>
+                <span data-lang="bn">আমি অনলাইন মানসিক স্বাস্থ্য পরামর্শ ব্যবস্থা তৈরি করি</span>
+              </h1>
+
+              <p class="sub" data-lang="en">
+                A cinematic, interactive portfolio built with HTML/CSS/JS and a Django-powered contact form.
+                Clean UI. 3D tilt cards. Smooth transitions.
+              </p>
+              <p class="sub" data-lang="bn">
+                HTML/CSS/JS দিয়ে তৈরি একটি সিনেমাটিক, ইন্টার‌্যাক্টিভ পোর্টফোলিও এবং Django দিয়ে চালিত কন্ট্যাক্ট ফর্ম।
+                সুন্দর UI। 3D টিল্ট কার্ড। স্মুথ ট্রানজিশন।
+              </p>
+
+              <div class="cta-row">
+                <a class="btn accent" href="#"
+                   data-scrollto="projects" data-lang="en">See Projects</a>
+                <a class="btn accent" href="#"
+                   data-scrollto="projects" data-lang="bn">প্রজেক্ট দেখুন</a>
+
+                <button class="btn" type="button" data-nav="contact">
+                  <span data-lang="en">Contact</span>
+                  <span data-lang="bn">যোগাযোগ</span>
+                </button>
+              </div>
+
+              <div class="tilt-grid">
+                <div class="tilt" data-tilt>
+                  <div class="t-title" data-lang="en">Modern UI</div>
+                  <div class="t-title" data-lang="bn">মডার্ন UI</div>
+                  <p class="t-sub" data-lang="en">Cinematic transitions + glass panels.</p>
+                  <p class="t-sub" data-lang="bn">সিনেমাটিক ট্রানজিশন + গ্লাস প্যানেল।</p>
+                </div>
+
+                <div class="tilt" data-tilt>
+                  <div class="t-title" data-lang="en">3D Tilt Cards</div>
+                  <div class="t-title" data-lang="bn">3D টিল্ট কার্ড</div>
+                  <p class="t-sub" data-lang="en">Hover/mouse depth interaction.</p>
+                  <p class="t-sub" data-lang="bn">হোভার/মাউসে ডেপথ ইন্টার‌অ্যাকশন।</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="block">
+                <h3 data-lang="en">Highlights</h3>
+                <h3 data-lang="bn">ফিচার</h3>
+                <p data-lang="en">
+                  Single-page sections with click-to-show.
+                  Language toggle (English/Bangla).
+                  CV download.
+                </p>
+                <p data-lang="bn">
+                  সিঙ্গেল-পেজ সেকশন: ক্লিক করে দেখানো।
+                  ভাষা টগল (ইংরেজি/বাংলা)।
+                  CV ডাউনলোড।
+                </p>
+              </div>
+
+              <div class="block" style="margin-top:14px;">
+                <h3 data-lang="en">Focus</h3>
+                <h3 data-lang="bn">ফোকাস</h3>
+                <p data-lang="en">Mental wellness product mindset + clean engineering.</p>
+                <p data-lang="bn">মেন্টাল ওয়েলনেস প্রোডাক্ট চিন্তা + পরিষ্কার ইঞ্জিনিয়ারিং।</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="section">
+        <div class="panel">
+          <h2 style="margin:0 0 8px 0;" data-lang="en">Projects</h2>
+          <h2 style="margin:0 0 8px 0;" data-lang="bn">প্রজেক্টস</h2>
+          <p class="sub" style="margin-top:6px;" data-lang="en">
+            Click a project card to view details (modal). Replace the text with your real work.
+          </p>
+          <p class="sub" style="margin-top:6px;" data-lang="bn">
+            প্রজেক্ট কার্ডে ক্লিক করলে ডিটেইলস (মডাল) দেখাবে। আপনার আসল কাজ দিয়ে টেক্সট পরিবর্তন করুন।
+          </p>
+
+          <div class="project-list">
+            <div class="project-card" role="button" tabindex="0"
+                 data-project='{
+                   "title":"Mental Wellness Consultation System",
+                   "badge":"Django",
+                   "body":"A consultation platform focused on mental wellness workflows: user profiles, booking, appointment scheduling, and secure contact/inquiries."
+                 }'>
+              <div class="title">
+                <strong>Consultation System</strong>
+                <span class="badge">Django</span>
+              </div>
+              <p class="desc" data-lang="en">Online consultation workflow with clean UX.</p>
+              <p class="desc" data-lang="bn">অনলাইন কনসালটেশন ওয়ার্কফ্লো — স্মুথ UX।</p>
+            </div>
+
+            <div class="project-card" role="button" tabindex="0"
+                 data-project='{
+                   "title":"Portfolio UI Kit (Cinematic)",
+                   "badge":"HTML/CSS/JS",
+                   "body":"A cinematic, interactive UI kit: glass navigation, scroll-less section switching, 3D tilt cards, and modal interactions."
+                 }'>
+              <div class="title">
+                <strong>Portfolio UI Kit</strong>
+                <span class="badge">HTML/CSS/JS</span>
+              </div>
+              <p class="desc" data-lang="en">3D tilt + smooth animated sections.</p>
+              <p class="desc" data-lang="bn">3D টিল্ট + স্মুথ অ্যানিমেটেড সেকশন।</p>
+            </div>
+
+            <div class="project-card" role="button" tabindex="0"
+                 data-project='{
+                   "title":"Appointment Booking Experience",
+                   "badge":"Front-end",
+                   "body":"A focused booking UI: step-by-step forms, validation micro-interactions, and responsive layout for mobile-first usage."
+                 }'>
+              <div class="title">
+                <strong>Booking Experience</strong>
+                <span class="badge">Front-end</span>
+              </div>
+              <p class="desc" data-lang="en">Step forms + micro-interactions.</p>
+              <p class="desc" data-lang="bn">স্টেপ ফর্ম + মাইক্রো ইন্টার‌অ্যাকশন।</p>
+            </div>
+
+            <div class="project-card" role="button" tabindex="0"
+                 data-project='{
+                   "title":"Performance & Accessibility Pass",
+                   "badge":"Best Practice",
+                   "body":"Accessibility and performance improvements: semantic HTML, keyboard support, and optimized transitions for smooth UX."
+                 }'>
+              <div class="title">
+                <strong>Performance Pass</strong>
+                <span class="badge">Best Practice</span>
+              </div>
+              <p class="desc" data-lang="en">Keyboard-friendly + smooth UX.</p>
+              <p class="desc" data-lang="bn">কীবোর্ড-ফ্রেন্ডলি + স্মুথ UX।</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="section">
+        <div class="panel">
+          <h2 style="margin:0 0 8px 0;" data-lang="en">About</h2>
+          <h2 style="margin:0 0 8px 0;" data-lang="bn">আমার সম্পর্কে</h2>
+
+          <div class="grid-2">
+            <div class="block">
+              <h3 data-lang="en">Who I am</h3>
+              <h3 data-lang="bn">আমি কে</h3>
+              <p data-lang="en">
+                I’m <strong>Md. Arif Babu</strong>, a developer focused on modern web experiences.
+                I build products with clean UI and thoughtful interactions.
+              </p>
+              <p data-lang="bn">
+                আমি <strong>Md. Arif Babu</strong>, আধুনিক ওয়েব এক্সপেরিয়েন্সের প্রতি আগ্রহী একজন ডেভেলপার।
+                পরিষ্কার UI এবং ভালো ইন্টার‌অ্যাকশন দিয়ে প্রজেক্ট বানাই।
+              </p>
+            </div>
+
+            <div class="block">
+              <h3 data-lang="en">What I build</h3>
+              <h3 data-lang="bn">আমি কি বানাই</h3>
+              <p data-lang="en">
+                Web systems for real-world needs—especially mental wellness consultation workflows.
+              </p>
+              <p data-lang="bn">
+                বাস্তব প্রয়োজনের জন্য ওয়েব সিস্টেম—বিশেষ করে মেন্টাল ওয়েলনেস কনসালটেশন ওয়ার্কফ্লো।
+              </p>
+            </div>
+          </div>
+
+          <div class="tilt-grid" style="margin-top:14px;">
+            <div class="tilt" data-tilt>
+              <div class="t-title" data-lang="en">UX First</div>
+              <div class="t-title" data-lang="bn">UX আগে</div>
+              <p class="t-sub" data-lang="en">Make it feel premium and simple.</p>
+              <p class="t-sub" data-lang="bn">প্রিমিয়াম + সহজ লাগবে।</p>
+            </div>
+            <div class="tilt" data-tilt>
+              <div class="t-title" data-lang="en">Reliable Tech</div>
+              <div class="t-title" data-lang="bn">রিলায়েবল টেক</div>
+              <p class="t-sub" data-lang="en">Django-backed forms and APIs when needed.</p>
+              <p class="t-sub" data-lang="bn">প্রয়োজনে Django দিয়ে ফর্ম/এপিআই।</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" class="section">
+        <div class="panel">
+          <h2 style="margin:0 0 8px 0;" data-lang="en">Skills</h2>
+          <h2 style="margin:0 0 8px 0;" data-lang="bn">স্কিলস</h2>
+          <p class="sub" style="margin-top:6px;" data-lang="en">
+            Animated chips (appear when section is active). Replace with your real tech stack.
+          </p>
+          <p class="sub" style="margin-top:6px;" data-lang="bn">
+            সেকশন অ্যাক্টিভ হলে চিপস অ্যানিমেট হবে। আপনার আসল টেক স্ট্যাক দিয়ে বদলান।
+          </p>
+
+          <div class="skills-row">
+            <div class="chip" data-lang="en">HTML</div>
+            <div class="chip" data-lang="en">CSS</div>
+            <div class="chip" data-lang="en">JavaScript</div>
+            <div class="chip" data-lang="en">Django</div>
+            <div class="chip" data-lang="en">REST APIs</div>
+            <div class="chip" data-lang="en">UI/UX</div>
+            <div class="chip" data-lang="en">Responsive Design</div>
+            <div class="chip" data-lang="en">Accessibility</div>
+
+            <div class="chip" data-lang="bn">HTML</div>
+            <div class="chip" data-lang="bn">CSS</div>
+            <div class="chip" data-lang="bn">জাভাস্ক্রিপ্ট</div>
+            <div class="chip" data-lang="bn">ডিজ্যাঙ্গো</div>
+            <div class="chip" data-lang="bn">REST এপিআই</div>
+            <div class="chip" data-lang="bn">UI/UX</div>
+            <div class="chip" data-lang="bn">রেসপনসিভ</div>
+            <div class="chip" data-lang="bn">অ্যাক্সেসিবিলিটি</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="section">
+        <div class="panel">
+          <h2 style="margin:0 0 8px 0;" data-lang="en">Contact</h2>
+          <h2 style="margin:0 0 8px 0;" data-lang="bn">যোগাযোগ</h2>
+
+          <p class="sub" style="margin-top:6px;" data-lang="en">
+            Django backend handles form submission. I included a working frontend AJAX submit.
+          </p>
+          <p class="sub" style="margin-top:6px;" data-lang="bn">
+            Django ব্যাকএন্ড দিয়ে ফর্ম সাবমিট হবে। AJAX সাবমিটসহ ফ্রন্টএন্ড দিলাম।
+          </p>
+
+          <form id="contactForm" method="post" action="/contact/">
+            <!-- Django CSRF token will be injected server-side -->
+            <!-- In plain static usage you can remove the CSRF requirement -->
+            <label>
+              <span data-lang="en">Your Name</span>
+              <span data-lang="bn">আপনার নাম</span>
+              <input name="name" required placeholder="Name" />
+            </label>
+
+            <label>
+              <span data-lang="en">Email</span>
+              <span data-lang="bn">ইমেইল</span>
+              <input type="email" name="email" required placeholder="you@example.com" />
+            </label>
+
+            <label class="full">
+              <span data-lang="en">Message</span>
+              <span data-lang="bn">মেসেজ</span>
+              <textarea name="message" required placeholder="Write your message..."></textarea>
+            </label>
+
+            <div class="form-actions">
+              <button class="btn accent" type="submit">
+                <span data-lang="en">Send Message</span>
+                <span data-lang="bn">মেসেজ পাঠান</span>
+              </button>
+              <p class="hint" id="formStatus" aria-live="polite"></p>
+            </div>
+          </form>
+
+          <footer>
+            <div>
+              <span data-lang="en">©</span><span data-lang="bn">©</span> <span id="year"></span>
+              <span data-lang="en">Md. Arif Babu • Vibe Coder</span>
+              <span data-lang="bn">Md. Arif Babu • Vibe Coder</span>
+            </div>
+            <div>
+              <span data-lang="en">Mental Wellness Online Consultation</span>
+              <span data-lang="bn">অনলাইন মানসিক স্বাস্থ্য পরামর্শ</span>
+            </div>
+          </footer>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- PROJECT MODAL -->
+  <div class="modal" id="projectModal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle">Project</h2>
+          <div style="margin-top:6px; color:var(--muted); font-weight:800;" id="modalBadge"></div>
+        </div>
+        <button class="close" type="button" id="modalClose">Close</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // ====== Config you will edit ======
+    const CV_URL = "/static/files/Md_Arif_Babu_CV.pdf"; // <-- change to your CV file path
+
+    // Django contact endpoint:
+    // In Django templates, CSRF token should be included.
+    // If you use Django's template engine, add {% csrf_token %} inside the form.
+    // For AJAX, the code below reads CSRF from cookie if present.
+    const CONTACT_URL = "/contact/"; // must match Django urls.py
+    // ==================================
+
+    // CV download
+    const cvBtn = document.getElementById("cvBtn");
+    cvBtn.href = CV_URL;
+
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Language toggle
+    const langToggle = document.getElementById("langToggle");
+    function setLang(mode){
+      document.documentElement.classList.toggle("bn", mode === "bn");
+      langToggle.textContent = mode === "bn" ? "English" : "বাংলা";
+    }
+    // default English
+    setLang("en");
+    langToggle.addEventListener("click", () => {
+      const isBn = document.documentElement.classList.contains("bn");
+      setLang(isBn ? "en" : "bn");
+    });
+
+    // Section switching (no scroll: only show selected)
+    const buttons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+
+    function setActive(targetId){
+      sections.forEach(sec => sec.classList.toggle("active", sec.id === targetId));
+      buttons.forEach(btn => btn.classList.toggle("active", btn.dataset.target === targetId));
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => setActive(btn.dataset.target));
+    });
+
+    // Buttons that navigate without scrolling
+    document.querySelectorAll("[data-nav]").forEach(el => {
+      el.addEventListener("click", () => setActive(el.getAttribute("data-nav")));
+    });
+    document.querySelectorAll("[data-scrollto]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        setActive(el.getAttribute("data-scrollto"));
+      });
+    });
+
+    // 3D Tilt
+    document.querySelectorAll("[data-tilt]").forEach(card => {
+      const max = 10; // degrees
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;  // 0..1
+        const py = (e.clientY - r.top) / r.height;  // 0..1
+
+        const tiltX = (0.5 - py) * max;
+        const tiltY = (px - 0.5) * max;
+
+        card.style.setProperty("--mx", (px * 100).toFixed(2) + "%");
+        card.style.setProperty("--my", (py * 100).toFixed(2) + "%");
+
+        card.style.transform =
+          `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+      });
+    });
+
+    // Modal projects
+    const projectModal = document.getElementById("projectModal");
+    const modalClose = document.getElementById("modalClose");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBadge = document.getElementById("modalBadge");
+    const modalBody = document.getElementById("modalBody");
+
+    function openModal(payload){
+      modalTitle.textContent = payload.title || "Project";
+      modalBadge.textContent = payload.badge ? `• ${payload.badge}` : "";
+      modalBody.textContent = payload.body || "";
+      projectModal.classList.add("open");
+      projectModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(){
+      projectModal.classList.remove("open");
+      projectModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll(".project-card").forEach(card => {
+      const getPayload = () => {
+        try { return JSON.parse(card.getAttribute("data-project")); }
+        catch { return {}; }
+      };
+
+      card.addEventListener("click", () => openModal(getPayload()));
+      card.addEventListener("keydown", (e) => {
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          openModal(getPayload());
+        }
+      });
+    });
+
+    modalClose.addEventListener("click", closeModal);
+    projectModal.addEventListener("click", (e) => {
+      if(e.target === projectModal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && projectModal.classList.contains("open")) closeModal();
+    });
+
+    // Django contact AJAX (optional but nice)
+    function getCookie(name){
+      const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    const contactForm = document.getElementById("contactForm");
+    const formStatus = document.getElementById("formStatus");
+
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      formStatus.textContent = "Sending...";
+
+      const formData = new FormData(contactForm);
+
+      // If you use Django templates, add {% csrf_token %} to the form
+      // then CSRF token will be present as cookie for typical setups.
+      const csrftoken = getCookie("csrftoken");
+
+      try{
+        const res = await fetch(CONTACT_URL, {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            ...(csrftoken ? {"X-CSRFToken": csrftoken} : {})
+          },
+          body: formData
+        });
+
+        if(!res.ok){
+          throw new Error("Request failed");
+        }
+
+        const data = await res.json().catch(() => ({}));
+        formStatus.textContent = data.message || "Sent! Thanks for contacting.";
+        contactForm.reset();
+      }catch(err){
+        formStatus.textContent = "Something went wrong. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
